@@ -1,5 +1,7 @@
 package osberbot.models;
 
+import java.util.List;
+
 /**
  * Created by Tititesouris on 27/09/2015.
  */
@@ -28,6 +30,30 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static List<User> findAll() {
+        return null;
+    }
+
+    public static List<User> findById() {
+        return null;
+    }
+
+    public static List<User> findByName() {
+        return null;
+    }
+
+    boolean insertUser(User user) {
+        return false;
+    }
+
+    boolean updateUser(User user) {
+        return false;
+    }
+
+    boolean deleteUser(User user) {
+        return false;
     }
 
 }
