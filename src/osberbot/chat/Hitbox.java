@@ -1,16 +1,13 @@
 package osberbot.chat;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import jdk.nashorn.api.scripting.JSObject;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import osberbot.tools.JSON;
+import osberbot.tools.HTTP;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -19,7 +16,7 @@ import java.util.Properties;
 public class Hitbox extends WebSocketClient {
 
     public Hitbox() throws URISyntaxException {
-        super(new URI("ws://ec2-54-226-192-118.compute-1.amazonaws.com:80"));
+        super(new URI("ws://ec2-54-226-192-118.compute-1.amazonaws.com/socket.io/1/websocket"));
 
         try {
             Properties properties = new Properties();
@@ -31,7 +28,7 @@ public class Hitbox extends WebSocketClient {
             String login = properties.getProperty("login");
             String pass = properties.getProperty("pass");
 
-            JsonElement json = JSON.getJsonPost(api + "auth/token", "login=" + login + "&pass=" + pass);
+            JsonElement json = HTTP.getJsonPost(api + "auth/token", "login=" + login + "&pass=" + pass);
             if (json.isJsonObject() && json.getAsJsonObject().has("authToken")) {
                 String auth = json.getAsJsonObject().get("authToken").getAsString();
                 System.out.println(auth);
@@ -45,6 +42,14 @@ public class Hitbox extends WebSocketClient {
         }
     }
 
+    public String getConnectionId(String url) {
+        return "";
+    }
+
+    public void ping() {
+        send("2::");
+    }
+
     @Override
     public void onOpen(ServerHandshake handshake) {
         System.out.println("hand: " + handshake);
@@ -53,10 +58,15 @@ public class Hitbox extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         System.out.println("mesg: " + message);
+        if (message.equals("2::"))
+            ping();
+        else {
+
+        }
         JsonParser parser = new JsonParser();
-        JsonObject obj = (JsonObject)parser.parse(message);
-        String channel = obj.get("channel").getAsString();
-        System.out.println(channel + " ###");
+        //JsonObject obj = (JsonObject)parser.parse(message);
+        //String channel = obj.get("channel").getAsString();
+        //System.out.println(channel + " ###");
     }
 
     @Override
