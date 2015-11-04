@@ -1,10 +1,12 @@
 package osberbot.chat;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import osberbot.tools.HTTP;
+import osberbot.tools.JSON;
 
 import java.io.*;
 import java.net.*;
@@ -13,70 +15,70 @@ import java.util.Properties;
 /**
  * Created by Tititesouris on 02/11/2015.
  */
-public class Hitbox extends WebSocketClient {
+public class Hitbox {
 
-    public Hitbox() throws URISyntaxException {
-        super(new URI("ws://ec2-54-226-192-118.compute-1.amazonaws.com/socket.io/1/websocket"));
+    private String name;
 
-        try {
-            Properties properties = new Properties();
-            FileInputStream in = new FileInputStream("config/hitbox.properties");
-            properties.load(in);
-            in.close();
+    private String token;
 
-            String api = properties.getProperty("api");
-            String login = properties.getProperty("login");
-            String pass = properties.getProperty("pass");
+    private String url;
 
-            JsonElement json = HTTP.getJsonPost(api + "auth/token", "login=" + login + "&pass=" + pass);
-            if (json.isJsonObject() && json.getAsJsonObject().has("authToken")) {
-                String auth = json.getAsJsonObject().get("authToken").getAsString();
-                System.out.println(auth);
+    public boolean connect(String login, String pass) {
+        this.name = login;
+        String server = getServer();
+        if (server != null) {
+            token = getToken(login, pass);
+            if (token != null) {
+                String connectionId = getConnectionId(server);
+                if (connectionId != null) {
+                    url = "ws://" + server + "/socket.io/1/websocket/" + connectionId;
+                    return true;
+                }
             }
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
+        return false;
+    }
+
+    private String getServer() {
+        String get = HTTP.GET("http://api.hitbox.tv/chat/servers");
+        if (get != null) {
+            JsonArray servers = JSON.getArray(get);
+            if (servers != null && servers.size() > 0) {
+                return servers.get(0).getAsJsonObject().get("server_ip").getAsString();
+            }
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        return null;
+    }
+
+    private String getToken(String login, String pass) {
+        String post = HTTP.POST("http://api.hitbox.tv/auth/token", "login=" + login + "&pass=" + pass);
+        if (post != null) {
+            JsonObject json = JSON.getObject(post);
+            if (json != null && json.has("authToken")) {
+                return json.getAsJsonObject().get("authToken").getAsString();
+            }
         }
+        return null;
     }
 
-    public String getConnectionId(String url) {
-        return "";
-    }
-
-    public void ping() {
-        send("2::");
-    }
-
-    @Override
-    public void onOpen(ServerHandshake handshake) {
-        System.out.println("hand: " + handshake);
-    }
-
-    @Override
-    public void onMessage(String message) {
-        System.out.println("mesg: " + message);
-        if (message.equals("2::"))
-            ping();
-        else {
-
+    private String getConnectionId(String server) {
+        String get = HTTP.GET("http://" + server + "/socket.io/1/");
+        if (get != null) {
+            return get.split(":")[0];
         }
-        JsonParser parser = new JsonParser();
-        //JsonObject obj = (JsonObject)parser.parse(message);
-        //String channel = obj.get("channel").getAsString();
-        //System.out.println(channel + " ###");
+        return null;
     }
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        System.out.println("close: " + code + "  " + reason + "  " + reason);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public void onError(Exception e) {
-        e.printStackTrace();
+    public String getToken() {
+        return token;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
 }
