@@ -1,11 +1,5 @@
 package osberbot.chat;
 
-import osberbot.chat.client.IRCClient;
-import osberbot.chat.client.WebsocketClient;
-import osberbot.chat.client.TwitchClient;
-import osberbot.chat.connection.IRCConnection;
-import osberbot.chat.connection.TwitchConnection;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -17,23 +11,16 @@ public class Main {
 
     public static void main(String[] args) {
         try {
+            System.setProperty("http.proxyHost", "cache.univ-lille1.fr");
+            System.setProperty("http.proxyPort", "3128");
+
             Properties twitchProperties = new Properties();
             twitchProperties.load(new FileInputStream("config/twitch.properties"));
             Properties hitboxProperties = new Properties();
             hitboxProperties.load(new FileInputStream("config/hitbox.properties"));
-            IRCConnection twitch = new TwitchConnection(twitchProperties.getProperty("login"), twitchProperties.getProperty("pass"));
-            IRCClient client = new TwitchClient((TwitchConnection) twitch);
-            client.run();
-            client.joinChannel("tititesouris");
-            client.sendMessage("tititesouris", "Hello World!");
-            /*
-            WebsocketConnection hitbox = new HitboxConnection(hitboxProperties.getProperty("login"), hitboxProperties.getProperty("pass"));
-            if (hitbox.init()) {
-                WebsocketClient client = new HitboxClient((HitboxConnection) hitbox);
-                client.open();
-                client.joinChannel("tititesouris");
-                client.sendMessage("tititesouris", "tititesouris", "Hello World!");
-            }*/
+            TwitchClient twitch = new TwitchClient(twitchProperties.getProperty("name"), twitchProperties.getProperty("password"));
+            twitch.init();
+            twitch.connect();
         }
         catch (IOException e) {
             e.printStackTrace();

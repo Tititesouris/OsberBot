@@ -28,8 +28,8 @@ public abstract class Client {
      * Creates a new client.
      *
      * @param server    Server the client can connect to
-     * @param name      Name of the client
-     * @param password  Password of the client
+     * @param name      Name to connect to the server with
+     * @param password  Password to connect to the server with
      */
     public Client(Server server, String name, String password) {
         this.server = server;
