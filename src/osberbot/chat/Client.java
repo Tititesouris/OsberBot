@@ -25,6 +25,11 @@ public abstract class Client {
     protected String password;
 
     /**
+     * Whether or not the client is in debug mode.
+     */
+    protected boolean debug;
+
+    /**
      * Creates a new client.
      *
      * @param server    Server the client can connect to
@@ -32,9 +37,22 @@ public abstract class Client {
      * @param password  Password to connect to the server with
      */
     public Client(Server server, String name, String password) {
+        this(server, name, password, false);
+    }
+
+    /**
+     * Creates a new client.
+     *
+     * @param server    Server the client can connect to
+     * @param name      Name to connect to the server with
+     * @param password  Password to connect to the server with
+     * @param debug     Whether or not the client is in debug mode.
+     */
+    public Client(Server server, String name, String password, boolean debug) {
         this.server = server;
         this.name = name;
         this.password = password;
+        this.debug = debug;
     }
 
     /**
