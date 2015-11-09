@@ -52,6 +52,28 @@ public abstract class Client {
     public abstract boolean connect();
 
     /**
+     * This method disconnects the client from the server.
+     *
+     * @return  True if the client could disconnect from the server. False otherwise.
+     */
+    public abstract boolean disconnect();
+
+    /**
+     * This method gets called when the server pings the client.
+     * Its only purpose is to call the pong() method to keep the connection alive with the server.
+     */
+    protected void ping() {
+        pong();
+    }
+
+    /**
+     * This method must be called by the client upon receiving a ping to keep the connection alive with the server.
+     *
+     * @return  True if the client could ping the server. False otherwise.
+     */
+    public abstract boolean pong();
+
+    /**
      * This method gets called when the client receives a message from the channel.
      * This method does not get called when the client receives a whisper from a user.
      *

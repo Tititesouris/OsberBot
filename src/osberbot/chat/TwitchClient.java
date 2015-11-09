@@ -40,19 +40,35 @@ public class TwitchClient extends Client {
     @Override
     public boolean connect() {
         try {
-            writer.write("PASS " + password + "\r\n");
-            writer.write("NICK " + name + "\r\n");
+            writer.write("PASS " + password + "\n");
+            writer.write("NICK " + name + "\n");
             writer.flush();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println("Line: " + line);
-                if (line.contains(":tmi.twitch.tv 001")) {
-                    break;
-                }
-            }
-            return true;
+            return reader.readLine().contains(":tmi.twitch.tv 001");
         }
         catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean disconnect() {
+        try {
+            socket.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
+
+    @Override
+    public boolean pong() {
+        try {
+            writer.write("PONG tmi.twitch.tv\n");
+            writer.flush();
+            return true;
+        } catch (IOException e) {
             return false;
         }
     }
@@ -64,7 +80,13 @@ public class TwitchClient extends Client {
 
     @Override
     public boolean sendMessage(String channel, String message) {
-        return false;
+        try {
+            writer.write("PRIVMSG #" + channel + " :" + message + '\n');
+            writer.flush();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override
@@ -79,7 +101,12 @@ public class TwitchClient extends Client {
 
     @Override
     public boolean joinChannel(String channel) {
-        return false;
+        try {
+            writer.write("JOIN #" + channel + '\n');
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     @Override
