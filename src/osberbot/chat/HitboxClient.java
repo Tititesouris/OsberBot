@@ -3,6 +3,7 @@ package osberbot.chat;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
 import osberbot.tools.HTTP;
 import osberbot.tools.JSON;
@@ -22,8 +23,18 @@ public class HitboxClient extends Client implements Runnable {
      */
     private WebSocketClient webSocketClient;
 
+    /**
+     * This flag is true when a connection with the server has been established.
+     */
+    private boolean connected;
+
+    /**
+     * Number of milliseconds to wait for the client to establish a connection with the server before timing out.
+     */
+    private static final int TIMEOUT = 3000;
+
     public HitboxClient(String name, String password) {
-        super(getServer(), name, password);
+        this(name, password, false);
     }
 
     public HitboxClient(String name, String password, boolean debug) {
@@ -46,11 +57,12 @@ public class HitboxClient extends Client implements Runnable {
                     if (debug)
                         System.out.print("\tSuccess!\nCreating websocket client...");
                     try {
-                        webSocketClient = new WebSocketClient(new URI("ws://" + server + "/socket.io/1/websocket/" + connectionId)) {
+                        webSocketClient = new WebSocketClient(new URI("ws://" + server.getAddress() + "/socket.io/1/websocket/" + connectionId), new Draft_10()) {
                             @Override
                             public void onOpen(ServerHandshake serverHandshake) {
                                 if (debug)
-                                    System.out.println("Connection opened.");
+                                    System.out.println("Connection opened:" + serverHandshake.getHttpStatusMessage());
+                                connected = true;
                             }
 
                             @Override
@@ -62,6 +74,7 @@ public class HitboxClient extends Client implements Runnable {
                             public void onClose(int i, String s, boolean b) {
                                 if (debug)
                                     System.out.println("Connection closed. Code: " + i + ", reason: " + s + ", remote: " + b);
+                                connected = false;
                             }
 
                             @Override
@@ -98,9 +111,18 @@ public class HitboxClient extends Client implements Runnable {
         if (debug)
             System.out.print("Opening connection to " + server + "...");
         if (webSocketClient != null) {
-            if (debug)
-                System.out.println("\tSuccess!");
-            return true;
+            try {
+                webSocketClient.connectBlocking();
+                if (debug)
+                    System.out.println("\tSuccess!");
+                return true;
+            } catch (InterruptedException e) {
+                if (debug) {
+                    System.out.println("\tFailure:");
+                    e.printStackTrace(System.out);
+                }
+                return false;
+            }
         }
         if (debug)
             System.out.println("\tFailure: Websocket client not initialized.");
@@ -113,9 +135,16 @@ public class HitboxClient extends Client implements Runnable {
             if (debug)
                 System.out.print("Closing connection...");
             webSocketClient.closeBlocking();
+            long start = System.currentTimeMillis();
+            while (!connected && System.currentTimeMillis() - start < TIMEOUT);
+            if (connected) {
+                if (debug)
+                    System.out.println("\tSuccess!");
+                return true;
+            }
             if (debug)
-                System.out.println("\tSuccess!");
-            return true;
+                System.out.println("\tFailure: Connection timed out. (" + TIMEOUT + "ms)");
+            return false;
         } catch (InterruptedException e) {
             if (debug) {
                 System.out.println("\tFailure:");
@@ -130,7 +159,6 @@ public class HitboxClient extends Client implements Runnable {
         if (debug)
             System.out.println("Listening...");
         try {
-            webSocketClient.connectBlocking();
         }
         catch (Exception e) {
             System.out.println("---------- WARNING ----------");
@@ -140,7 +168,11 @@ public class HitboxClient extends Client implements Runnable {
 
     @Override
     public boolean pong() {
+        if (debug)
+            System.out.print("Sending PONG...");
         webSocketClient.send("2::");
+        if (debug)
+            System.out.println("\tSuccess!");
         return true;
     }
 

@@ -23,7 +23,7 @@ public class TwitchClient extends Client implements Runnable {
      * @param password  Password to connect to the server with
      */
     public TwitchClient(String name, String password) {
-        super(getServer(), name, password);
+        this(name, password, false);
     }
 
     /**
