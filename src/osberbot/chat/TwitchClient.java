@@ -1,5 +1,7 @@
 package osberbot.chat;
 
+import osberbot.tools.Toolkit;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -39,7 +41,7 @@ public class TwitchClient extends Client implements Runnable {
     public boolean init() {
         try {
             if (debug)
-                System.out.print("Creating socket connection to " + server.getAddress() + ":" + server.getPort() + "...");
+                System.out.print("Creating socket connection to " + server + "...");
             socket = new Socket(server.getAddress(), server.getPort());
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -47,8 +49,10 @@ public class TwitchClient extends Client implements Runnable {
                 System.out.println("\tSuccess!");
             return true;
         } catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
@@ -76,8 +80,10 @@ public class TwitchClient extends Client implements Runnable {
             return false;
         }
         catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
@@ -92,12 +98,15 @@ public class TwitchClient extends Client implements Runnable {
                 System.out.println("\tSuccess!");
             return true;
         } catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
 
+    @Override
     public void run() {
         if (debug)
             System.out.println("Listening...");
@@ -107,8 +116,9 @@ public class TwitchClient extends Client implements Runnable {
                 getMessage(line);
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            System.out.println("---------- WARNING ----------");
+            e.printStackTrace(System.out);
         }
     }
 
@@ -123,8 +133,10 @@ public class TwitchClient extends Client implements Runnable {
                 System.out.println("\tSuccess!");
             return true;
         } catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
@@ -133,7 +145,8 @@ public class TwitchClient extends Client implements Runnable {
     protected void getMessage(String message) {
         if (debug)
             System.out.println("<< " + message);
-        if (message.contains("PING")) {
+
+        if (!MessageHandler.handle(message) && message.contains("PING")) {
             ping();
         }
     }
@@ -147,6 +160,10 @@ public class TwitchClient extends Client implements Runnable {
             writer.flush();
             return true;
         } catch (IOException e) {
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
@@ -171,8 +188,10 @@ public class TwitchClient extends Client implements Runnable {
                 System.out.println("\tSuccess!");
             return true;
         } catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }
@@ -187,8 +206,10 @@ public class TwitchClient extends Client implements Runnable {
                 System.out.println("\tSuccess!");
             return true;
         } catch (IOException e) {
-            if (debug)
-                System.out.println("\tFailure: " + e.getMessage());
+            if (debug) {
+                System.out.println("\tFailure:");
+                e.printStackTrace(System.out);
+            }
             return false;
         }
     }

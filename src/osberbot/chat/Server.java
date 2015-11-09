@@ -36,4 +36,9 @@ public class Server {
         return port;
     }
 
+    @Override
+    public String toString() {
+        return address + ":" + port;
+    }
+
 }
