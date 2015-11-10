@@ -5,9 +5,10 @@ import com.google.gson.JsonObject;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
-import osberbot.chat.HitboxMessageHandler;
+import osberbot.chat.message.HitboxMessage;
+import osberbot.chat.message.handler.HitboxMessageHandler;
+import osberbot.chat.message.Message;
 import osberbot.chat.Server;
-import osberbot.chat.client.Client;
 import osberbot.tools.HTTP;
 import osberbot.tools.JSON;
 
@@ -182,28 +183,9 @@ public class HitboxClient extends Client implements Runnable {
         if (debug)
             System.out.println("<< " + message);
         if (message.startsWith("5:::")) {
-            JsonObject jsonObject = JSON.getObject(message.substring(4));
-            String msgName = jsonObject.get("name").getAsString();
-            if (msgName.equals("message")) {
-                JsonObject args = JSON.getObject(jsonObject.get("args").getAsJsonArray().get(0).getAsString());
-                String method = args.get("method").getAsString();
-                if (method.equals("chatMsg")) {
-                    JsonObject params = args.get("params").getAsJsonObject();
-                    String channel = params.get("channel").getAsString();
-                    String name = params.get("name").getAsString();
-                    String color = params.get("nameColor").getAsString();
-                    String text = params.get("text").getAsString();
-                    int time = params.get("time").getAsInt();
-                    String role = params.get("role").getAsString();
-                    boolean isFollower = params.get("isFollower").getAsBoolean();
-                    boolean isSubscriber = params.get("isSubscriber").getAsBoolean();
-                    boolean isOwner = params.get("isOwner").getAsBoolean();
-                    boolean isStaff = params.get("isStaff").getAsBoolean();
-                    boolean isCommunity = params.get("isCommunity").getAsBoolean();
-                    boolean media = params.get("media").getAsBoolean();
-                    boolean buffer = params.get("buffer").getAsBoolean();
-
-                }
+            Message reply = messageHandler.handle(message);
+            if (reply != null) {
+                sendMessage(reply);
             }
         }
         else if (message.equals("2::"))
@@ -211,11 +193,15 @@ public class HitboxClient extends Client implements Runnable {
     }
 
     @Override
-    public boolean sendMessage(String channel, String message) {
-        if (debug)
-            System.out.println(">> [" + channel + "] " + message);
-        webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"chatMsg\",\"params\":{\"channel\":\"" + channel + "\",\"name\":\"" + name + "\",\"nameColor\":\"FA5858\",\"text\":\"" + message + "\"}}]}");
-        return true;
+    public boolean sendMessage(Message message) {
+        if (message instanceof HitboxMessage) {
+            HitboxMessage hitboxMessage = (HitboxMessage) message;
+            if (debug)
+                System.out.println(">> [" + hitboxMessage.getChannel() + "] " + hitboxMessage.getName() + ": " + hitboxMessage.getText());
+            webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"chatMsg\",\"params\":{\"channel\":\"" + hitboxMessage.getChannel() + "\",\"name\":\"" + name + "\",\"nameColor\":\"" + hitboxMessage.getColor() + "\",\"text\":\"" + message.getText() + "\"}}]}");
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package osberbot.chat.client;
 
-import osberbot.chat.MessageHandler;
+import osberbot.chat.message.Message;
+import osberbot.chat.message.handler.MessageHandler;
 import osberbot.chat.Server;
 
 /**
@@ -113,11 +114,10 @@ public abstract class Client {
     /**
      * This method sends a message to a channel of the server.
      *
-     * @param channel   Channel to send the message to
-     * @param message   Message to send to the channel
+     * @param message   Message to send to the server
      * @return          True if the message was sent successfully. False otherwise.
      */
-    public abstract boolean sendMessage(String channel, String message);
+    public abstract boolean sendMessage(Message message);
 
     /**
      * This method gets called when the client receives a whisper from a user.

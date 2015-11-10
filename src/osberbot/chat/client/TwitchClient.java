@@ -1,7 +1,9 @@
 package osberbot.chat.client;
 
+import osberbot.chat.message.Message;
 import osberbot.chat.Server;
-import osberbot.chat.TwitchMessageHandler;
+import osberbot.chat.message.TwitchMessage;
+import osberbot.chat.message.handler.TwitchMessageHandler;
 
 import java.io.*;
 import java.net.Socket;
@@ -159,26 +161,36 @@ public class TwitchClient extends Client implements Runnable {
         if (debug)
             System.out.println("<< " + message);
 
-        if (!TwitchMessageHandler.handle(message) && message.contains("PING")) {
+        if (message.contains("PING")) {
             ping();
+        }
+        else {
+            Message reply = messageHandler.handle(message);
+            if (reply != null) {
+                sendMessage(reply);
+            }
         }
     }
 
     @Override
-    public boolean sendMessage(String channel, String message) {
-        if (debug)
-            System.out.println(">> [" + channel + "] " + message);
-        try {
-            writer.write("PRIVMSG #" + channel + " :" + message + '\n');
-            writer.flush();
-            return true;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
+    public boolean sendMessage(Message message) {
+        if (message instanceof TwitchMessage) {
+            TwitchMessage twitchMessage = (TwitchMessage)message;
+            if (debug)
+                System.out.println(">> [" + twitchMessage.getChannel() + "] " + twitchMessage.getText());
+            try {
+                writer.write("PRIVMSG #" + twitchMessage.getChannel() + " :" + twitchMessage.getText() + '\n');
+                writer.flush();
+                return true;
+            } catch (IOException e) {
+                if (debug) {
+                    System.out.println("\tFailure:");
+                    e.printStackTrace(System.out);
+                }
+                return false;
             }
-            return false;
         }
+        return false;
     }
 
     @Override
