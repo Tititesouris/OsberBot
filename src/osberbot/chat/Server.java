@@ -10,18 +10,18 @@ public class Server {
     /**
      * Address to access the server.
      */
-    private String address;
+    private final String address;
 
     /**
      * Port to access the server.
      */
-    private int port;
+    private final int port;
 
     /**
      * Creates a new server.
      *
-     * @param address   Address to access the server
-     * @param port      Port to access the server
+     * @param address Address to access the server
+     * @param port    Port to access the server
      */
     public Server(String address, int port) {
         this.address = address;

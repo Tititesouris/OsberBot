@@ -5,10 +5,10 @@ import com.google.gson.JsonObject;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
-import osberbot.chat.message.HitboxMessage;
-import osberbot.chat.message.handler.HitboxMessageHandler;
-import osberbot.chat.message.Message;
 import osberbot.chat.Server;
+import osberbot.chat.message.HitboxMessage;
+import osberbot.chat.message.Message;
+import osberbot.chat.message.handler.HitboxMessageHandler;
 import osberbot.tools.HTTP;
 import osberbot.tools.JSON;
 
@@ -18,8 +18,8 @@ import java.net.URISyntaxException;
 /**
  * This class represents a client connecting to a Hitbox chat server using the Websockets protocol.
  *
- * @see Client
  * @author Tititesouris
+ * @see Client
  */
 public class HitboxClient extends Client implements Runnable {
 
@@ -36,22 +36,11 @@ public class HitboxClient extends Client implements Runnable {
     /**
      * Creates a new Hitbox client.
      *
-     * @param name      Name to connect to the server with
-     * @param password  Password to connect to the server with
+     * @param name     Name to connect to the server with
+     * @param password Password to connect to the server with
      */
     public HitboxClient(String name, String password) {
-        this(name, password, false);
-    }
-
-    /**
-     * Creates a new Hitbox client.
-     *
-     * @param name      Name to connect to the server with
-     * @param password  Password to connect to the server with
-     * @param debug     Whether or not the client is in debug mode.
-     */
-    public HitboxClient(String name, String password, boolean debug) {
-        super(getServer(), name, password, new HitboxMessageHandler(), debug);
+        super(getServer(), name, password, new HitboxMessageHandler());
     }
 
     @Override
@@ -161,8 +150,7 @@ public class HitboxClient extends Client implements Runnable {
         if (debug)
             System.out.println("Listening...");
         try {
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("---------- WARNING ----------");
             e.printStackTrace(System.out);
         }
@@ -187,8 +175,7 @@ public class HitboxClient extends Client implements Runnable {
             if (reply != null) {
                 sendMessage(reply);
             }
-        }
-        else if (message.equals("2::"))
+        } else if (message.equals("2::"))
             ping();
     }
 
@@ -197,7 +184,7 @@ public class HitboxClient extends Client implements Runnable {
         if (message instanceof HitboxMessage) {
             HitboxMessage hitboxMessage = (HitboxMessage) message;
             if (debug)
-                System.out.println(">> [" + hitboxMessage.getChannel() + "] " + hitboxMessage.getName() + ": " + hitboxMessage.getText());
+                System.out.println(">> [" + hitboxMessage.getChannel() + "] " + name + ": " + hitboxMessage.getText());
             webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"chatMsg\",\"params\":{\"channel\":\"" + hitboxMessage.getChannel() + "\",\"name\":\"" + name + "\",\"nameColor\":\"" + hitboxMessage.getColor() + "\",\"text\":\"" + message.getText() + "\"}}]}");
             return true;
         }

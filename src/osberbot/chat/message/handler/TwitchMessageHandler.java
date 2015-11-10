@@ -16,7 +16,7 @@ public class TwitchMessageHandler implements MessageHandler {
             if (messageParts[1].equals("PRIVMSG")) {
                 String channel = messageParts[2].substring(1);
                 String text = messageParts[3].substring(1);
-                return new TwitchMessage(channel, null, text);
+                return new TwitchMessage(channel, text);
             }
         }
         return null;

@@ -1,7 +1,7 @@
 package osberbot.chat.client;
 
-import osberbot.chat.message.Message;
 import osberbot.chat.Server;
+import osberbot.chat.message.Message;
 import osberbot.chat.message.TwitchMessage;
 import osberbot.chat.message.handler.TwitchMessageHandler;
 
@@ -11,8 +11,8 @@ import java.net.Socket;
 /**
  * This class represents a client connecting to a Twitch chat server using the IRC protocol.
  *
- * @see Client
  * @author Tititesouris
+ * @see Client
  */
 public class TwitchClient extends Client implements Runnable {
 
@@ -34,22 +34,11 @@ public class TwitchClient extends Client implements Runnable {
     /**
      * Creates a new Twitch client.
      *
-     * @param name      Name to connect to the server with
-     * @param password  Password to connect to the server with
+     * @param name     Name to connect to the server with
+     * @param password Password to connect to the server with
      */
     public TwitchClient(String name, String password) {
-        this(name, password, false);
-    }
-
-    /**
-     * Creates a new Twitch client.
-     *
-     * @param name      Name to connect to the server with
-     * @param password  Password to connect to the server with
-     * @param debug     Whether or not the client is in debug mode.
-     */
-    public TwitchClient(String name, String password, boolean debug) {
-        super(getServer(), name, password, new TwitchMessageHandler(), debug);
+        super(getServer(), name, password, new TwitchMessageHandler());
     }
 
     @Override
@@ -93,8 +82,7 @@ public class TwitchClient extends Client implements Runnable {
             if (debug)
                 System.out.println("\tFailure: " + line);
             return false;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             if (debug) {
                 System.out.println("\tFailure:");
                 e.printStackTrace(System.out);
@@ -130,8 +118,7 @@ public class TwitchClient extends Client implements Runnable {
             while ((line = reader.readLine()) != null) {
                 getMessage(line);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("---------- WARNING ----------");
             e.printStackTrace(System.out);
         }
@@ -163,8 +150,7 @@ public class TwitchClient extends Client implements Runnable {
 
         if (message.contains("PING")) {
             ping();
-        }
-        else {
+        } else {
             Message reply = messageHandler.handle(message);
             if (reply != null) {
                 sendMessage(reply);
@@ -175,7 +161,7 @@ public class TwitchClient extends Client implements Runnable {
     @Override
     public boolean sendMessage(Message message) {
         if (message instanceof TwitchMessage) {
-            TwitchMessage twitchMessage = (TwitchMessage)message;
+            TwitchMessage twitchMessage = (TwitchMessage) message;
             if (debug)
                 System.out.println(">> [" + twitchMessage.getChannel() + "] " + twitchMessage.getText());
             try {

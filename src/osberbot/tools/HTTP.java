@@ -8,7 +8,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Created by Tititesouris on 02/11/2015.
+ * This utilitarian class allows for easy HTTP operations.
  */
 public class HTTP {
 
@@ -46,8 +46,7 @@ public class HTTP {
             }
             reader.close();
             return lines.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return null;
         }
     }

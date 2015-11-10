@@ -33,7 +33,7 @@ public class HitboxMessageHandler implements MessageHandler {
                 boolean isCommunity = params.get("isCommunity").getAsBoolean();
                 boolean media = params.get("media").getAsBoolean();
                 if (text.startsWith("!say ")) {
-                    return new HitboxMessage(channel, null, text.substring(5), color);
+                    return new HitboxMessage(channel, text.substring(5), color);
                 }
             }
         }

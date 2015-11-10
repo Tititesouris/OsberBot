@@ -1,8 +1,6 @@
 package osberbot.sql;
 
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Created by Tititesouris on 27/09/2015.
+ * This class provides a framework to facilitate operations with the database.
  */
 public class Connection {
 
@@ -36,8 +34,7 @@ public class Connection {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + database, user, password);
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -50,8 +47,7 @@ public class Connection {
                 statement.setObject(i + 1, parameters[i]);
             }
             return statement.executeQuery();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -62,8 +58,7 @@ public class Connection {
         try {
             statement.close();
             connection.close();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 

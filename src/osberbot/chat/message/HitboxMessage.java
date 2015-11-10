@@ -15,20 +15,19 @@ public class HitboxMessage extends Message {
     /**
      * Creates a new message that can be transferred between a Hitbox client and server.
      *
-     * @param channel   Channel the message belongs to
-     * @param name      Name of the author of the message
-     * @param text      The actual content of the message
-     * @param color     Color of the name of the author
+     * @param channel Channel the message belongs to
+     * @param text    The actual content of the message
+     * @param color   Color of the name of the author
      */
-    public HitboxMessage(String channel, String name, String text, String color) {
-        super(channel, name, text);
+    public HitboxMessage(String channel, String text, String color) {
+        super(channel, text);
         this.color = color;
     }
 
     /**
      * Returns the color of the name of the author of the message.
      *
-     * @return  Color of the name of the author of the message
+     * @return Color of the name of the author of the message
      */
     public String getColor() {
         return color;

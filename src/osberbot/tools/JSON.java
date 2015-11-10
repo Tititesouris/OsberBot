@@ -3,7 +3,7 @@ package osberbot.tools;
 import com.google.gson.*;
 
 /**
- * Created by Quentin Brault on 04/11/2015.
+ * This utilitarian class allows for easy Json operations.
  */
 public class JSON {
 
@@ -15,8 +15,7 @@ public class JSON {
             if (json.isJsonObject()) {
                 return json.getAsJsonObject();
             }
-        }
-        catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             return null;
         }
         return null;
@@ -28,8 +27,7 @@ public class JSON {
             if (json.isJsonArray()) {
                 return json.getAsJsonArray();
             }
-        }
-        catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             return null;
         }
         return null;

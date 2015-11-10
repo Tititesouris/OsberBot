@@ -19,8 +19,7 @@ public class Main {
             while (results.next()) {
                 System.out.println(results.getString(1) + " " + results.getString(2));
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
