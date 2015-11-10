@@ -24,14 +24,9 @@ public class HitboxClient extends Client implements Runnable {
     private WebSocketClient webSocketClient;
 
     /**
-     * This flag is true when a connection with the server has been established.
+     * Token generated from the client's username and password.
      */
-    private boolean connected;
-
-    /**
-     * Number of milliseconds to wait for the client to establish a connection with the server before timing out.
-     */
-    private static final int TIMEOUT = 3000;
+    private String token;
 
     public HitboxClient(String name, String password) {
         this(name, password, false);
@@ -48,8 +43,8 @@ public class HitboxClient extends Client implements Runnable {
         if (server != null) {
             if (debug)
                 System.out.print("Getting token...");
-            password = getToken(name, password);
-            if (password != null) {
+            token = getToken(name, password);
+            if (token != null) {
                 if (debug)
                     System.out.print("\tSuccess!\nGetting connection ID...");
                 String connectionId = getConnectionId(server);
@@ -60,9 +55,6 @@ public class HitboxClient extends Client implements Runnable {
                         webSocketClient = new WebSocketClient(new URI("ws://" + server.getAddress() + "/socket.io/1/websocket/" + connectionId), new Draft_10()) {
                             @Override
                             public void onOpen(ServerHandshake serverHandshake) {
-                                if (debug)
-                                    System.out.println("Connection opened:" + serverHandshake.getHttpStatusMessage());
-                                connected = true;
                             }
 
                             @Override
@@ -74,7 +66,6 @@ public class HitboxClient extends Client implements Runnable {
                             public void onClose(int i, String s, boolean b) {
                                 if (debug)
                                     System.out.println("Connection closed. Code: " + i + ", reason: " + s + ", remote: " + b);
-                                connected = false;
                             }
 
                             @Override
@@ -135,16 +126,9 @@ public class HitboxClient extends Client implements Runnable {
             if (debug)
                 System.out.print("Closing connection...");
             webSocketClient.closeBlocking();
-            long start = System.currentTimeMillis();
-            while (!connected && System.currentTimeMillis() - start < TIMEOUT);
-            if (connected) {
-                if (debug)
-                    System.out.println("\tSuccess!");
-                return true;
-            }
             if (debug)
-                System.out.println("\tFailure: Connection timed out. (" + TIMEOUT + "ms)");
-            return false;
+                System.out.println("\tSuccess!");
+            return true;
         } catch (InterruptedException e) {
             if (debug) {
                 System.out.println("\tFailure:");
@@ -180,7 +164,31 @@ public class HitboxClient extends Client implements Runnable {
     protected void getMessage(String message) {
         if (debug)
             System.out.println("<< " + message);
-        if (message.equals("2::"))
+        if (message.startsWith("5:::")) {
+            JsonObject jsonObject = JSON.getObject(message.substring(4));
+            String msgName = jsonObject.get("name").getAsString();
+            if (msgName.equals("message")) {
+                JsonObject args = JSON.getObject(jsonObject.get("args").getAsJsonArray().get(0).getAsString());
+                String method = args.get("method").getAsString();
+                if (method.equals("chatMsg")) {
+                    JsonObject params = args.get("params").getAsJsonObject();
+                    String channel = params.get("channel").getAsString();
+                    String name = params.get("name").getAsString();
+                    String color = params.get("nameColor").getAsString();
+                    String text = params.get("text").getAsString();
+                    int time = params.get("time").getAsInt();
+                    String role = params.get("role").getAsString();
+                    boolean isFollower = params.get("isFollower").getAsBoolean();
+                    boolean isSubscriber = params.get("isSubscriber").getAsBoolean();
+                    boolean isOwner = params.get("isOwner").getAsBoolean();
+                    boolean isStaff = params.get("isStaff").getAsBoolean();
+                    boolean isCommunity = params.get("isCommunity").getAsBoolean();
+                    boolean media = params.get("media").getAsBoolean();
+                    boolean buffer = params.get("buffer").getAsBoolean();
+                }
+            }
+        }
+        else if (message.equals("2::"))
             ping();
     }
 
@@ -206,13 +214,16 @@ public class HitboxClient extends Client implements Runnable {
     public boolean joinChannel(String channel) {
         if (debug)
             System.out.println("Joining channel " + channel + ".");
-        webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"leaveChannel\",\"params\":{\"channel\":\"" + channel + "\",\"name\":\"" + name + "\",\"token\":\"" + password + "\",\"isAdmin\":false}}]}");
+        webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"joinChannel\",\"params\":{\"channel\":\"" + channel + "\",\"name\":\"" + name + "\",\"token\":\"" + token + "\",\"isAdmin\":false}}]}");
         return true;
     }
 
     @Override
     public boolean leaveChannel(String channel) {
-        return false;
+        if (debug)
+            System.out.println("Leaving channel " + channel + ".");
+        webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"leaveChannel\",\"params\":{\"channel\":\"" + channel + "\",\"name\":\"" + name + "\",\"token\":\"" + token + "\",\"isAdmin\":false}}]}");
+        return true;
     }
 
     private static Server getServer() {
