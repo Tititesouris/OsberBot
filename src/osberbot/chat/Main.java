@@ -1,5 +1,7 @@
 package osberbot.chat;
 
+import osberbot.chat.client.HitboxClient;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
