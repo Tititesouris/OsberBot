@@ -24,6 +24,7 @@ public class Main {
                 Thread twitchChat = new Thread(twitch);
                 twitchChat.start();
                 twitch.joinChannel("tititesouris");
+                twitch.joinChannel("honneyplay");
                 twitch.sendMessage(new TwitchMessage("tititesouris", "Hello World!"));
             }
             /*

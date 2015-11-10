@@ -2,11 +2,15 @@ package osberbot.chat.client;
 
 import osberbot.chat.Server;
 import osberbot.chat.message.Message;
+import osberbot.chat.message.MessageQueue;
 import osberbot.chat.message.TwitchMessage;
 import osberbot.chat.message.handler.TwitchMessageHandler;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a client connecting to a Twitch chat server using the IRC protocol.
@@ -32,6 +36,11 @@ public class TwitchClient extends Client implements Runnable {
     private BufferedWriter writer;
 
     /**
+     * Queue of messages that have yet to be sent.
+     */
+    private final MessageQueue messageQueue;
+
+    /**
      * Creates a new Twitch client.
      *
      * @param name     Name to connect to the server with
@@ -39,6 +48,7 @@ public class TwitchClient extends Client implements Runnable {
      */
     public TwitchClient(String name, String password) {
         super(getServer(), name, password, new TwitchMessageHandler());
+        this.messageQueue = new MessageQueue(2, 30000);
     }
 
     @Override
@@ -67,9 +77,12 @@ public class TwitchClient extends Client implements Runnable {
             if (debug)
                 System.out.print("Connecting to the server.");
             writer.write("PASS " + password + "\n");
+            writer.write("NICK " + name + "\n");
             if (debug)
                 System.out.print('.');
-            writer.write("NICK " + name + "\n");
+            writer.write("CAP REQ :twitch.tv/membership\n");
+            writer.write("CAP REQ :twitch.tv/commands\n");
+            writer.write("CAP REQ :twitch.tv/tags\n");
             if (debug)
                 System.out.print('.');
             writer.flush();
@@ -161,12 +174,15 @@ public class TwitchClient extends Client implements Runnable {
     @Override
     public boolean sendMessage(Message message) {
         if (message instanceof TwitchMessage) {
-            TwitchMessage twitchMessage = (TwitchMessage) message;
-            if (debug)
-                System.out.println(">> [" + twitchMessage.getChannel() + "] " + twitchMessage.getText());
+            messageQueue.add(message);
             try {
-                writer.write("PRIVMSG #" + twitchMessage.getChannel() + " :" + twitchMessage.getText() + '\n');
-                writer.flush();
+                while (messageQueue.canSend()) {
+                    TwitchMessage twitchMessage = (TwitchMessage) messageQueue.pop();
+                    writer.write("PRIVMSG #" + twitchMessage.getChannel() + " :" + twitchMessage.getText() + '\n');
+                    writer.flush();
+                    if (debug)
+                        System.out.println(">> [" + twitchMessage.getChannel() + "] " + twitchMessage.getText());
+                }
                 return true;
             } catch (IOException e) {
                 if (debug) {
@@ -175,6 +191,7 @@ public class TwitchClient extends Client implements Runnable {
                 }
                 return false;
             }
+
         }
         return false;
     }
@@ -226,7 +243,7 @@ public class TwitchClient extends Client implements Runnable {
     }
 
     private static Server getServer() {
-        return new Server("192.16.64.175", 6667);
+        return new Server("irc.twitch.tv", 6667);
     }
 
 }
