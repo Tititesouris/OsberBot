@@ -16,7 +16,7 @@ public class MessageQueue {
     private final List<Message> messages;
 
     /**
-     * Timestamps of the last 100 messages sent.
+     * Timestamps of the last {@code messageLimit} messages sent.
      */
     private final long[] timestamps;
 
@@ -52,7 +52,7 @@ public class MessageQueue {
      */
     public boolean canSend() {
         for (int i = 0; i < timestamps.length; i++) {
-            System.out.println(timestamps[i]);
+            System.out.println(System.currentTimeMillis() - timestamps[i]);
         }
         return messages.size() > 0 && System.currentTimeMillis() - timestamps[messageLimit - 1] > timeLimit;
     }

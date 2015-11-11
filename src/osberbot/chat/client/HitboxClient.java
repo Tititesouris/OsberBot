@@ -184,8 +184,8 @@ public class HitboxClient extends Client implements Runnable {
         if (message instanceof HitboxMessage) {
             HitboxMessage hitboxMessage = (HitboxMessage) message;
             if (debug)
-                System.out.println(">> [" + hitboxMessage.getChannel() + "] " + name + ": " + hitboxMessage.getText());
-            webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"chatMsg\",\"params\":{\"channel\":\"" + hitboxMessage.getChannel() + "\",\"name\":\"" + name + "\",\"nameColor\":\"" + hitboxMessage.getColor() + "\",\"text\":\"" + message.getText() + "\"}}]}");
+                System.out.println(hitboxMessage);
+            webSocketClient.send("5:::{\"name\":\"message\",\"args\":[{\"method\":\"chatMsg\",\"params\":{\"channel\":\"" + hitboxMessage.getChannel() + "\",\"name\":\"" + name + "\",\"nameColor\":\"FFFFFF\",\"text\":\"" + hitboxMessage.getText() + "\"}}]}");
             return true;
         }
         return false;

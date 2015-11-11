@@ -2,6 +2,7 @@ package osberbot.chat.message.handler;
 
 import com.google.gson.JsonObject;
 import osberbot.chat.message.HitboxMessage;
+import osberbot.chat.message.Message;
 import osberbot.tools.JSON;
 
 /**
@@ -33,7 +34,7 @@ public class HitboxMessageHandler implements MessageHandler {
                 boolean isCommunity = params.get("isCommunity").getAsBoolean();
                 boolean media = params.get("media").getAsBoolean();
                 if (text.startsWith("!say ")) {
-                    return new HitboxMessage(channel, text.substring(5), color);
+                    return new HitboxMessage(channel, text.substring(5));
                 }
             }
         }
@@ -41,7 +42,7 @@ public class HitboxMessageHandler implements MessageHandler {
     }
 
     @Override
-    public HitboxMessage handleMessage(String channel, String name, String message) {
+    public HitboxMessage handleMessage(Message message) {
         return null;
     }
 

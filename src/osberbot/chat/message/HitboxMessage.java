@@ -1,5 +1,7 @@
 package osberbot.chat.message;
 
+import osberbot.chat.user.User;
+
 /**
  * TODO: Description
  *
@@ -7,30 +9,12 @@ package osberbot.chat.message;
  */
 public class HitboxMessage extends Message {
 
-    /**
-     * Color of the name of the author.
-     */
-    private String color;
-
-    /**
-     * Creates a new message that can be transferred between a Hitbox client and server.
-     *
-     * @param channel Channel the message belongs to
-     * @param text    The actual content of the message
-     * @param color   Color of the name of the author
-     */
-    public HitboxMessage(String channel, String text, String color) {
-        super(channel, text);
-        this.color = color;
+    public HitboxMessage(String channel, User user, String text) {
+        super(channel, user, text);
     }
 
-    /**
-     * Returns the color of the name of the author of the message.
-     *
-     * @return Color of the name of the author of the message
-     */
-    public String getColor() {
-        return color;
+    public HitboxMessage(String channel, String text) {
+        super(channel, text);
     }
 
 }

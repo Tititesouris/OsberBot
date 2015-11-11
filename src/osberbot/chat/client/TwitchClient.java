@@ -48,7 +48,7 @@ public class TwitchClient extends Client implements Runnable {
      */
     public TwitchClient(String name, String password) {
         super(getServer(), name, password, new TwitchMessageHandler());
-        this.messageQueue = new MessageQueue(2, 30000);
+        this.messageQueue = new MessageQueue(2, 10000);
     }
 
     @Override

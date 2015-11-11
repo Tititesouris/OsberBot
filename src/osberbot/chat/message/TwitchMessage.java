@@ -1,5 +1,7 @@
 package osberbot.chat.message;
 
+import osberbot.chat.user.User;
+
 /**
  * TODO: Description
  *
@@ -7,12 +9,10 @@ package osberbot.chat.message;
  */
 public class TwitchMessage extends Message {
 
-    /**
-     * Creates a new message that can be transferred between a Twitch client and server.
-     *
-     * @param channel Channel the message belongs to
-     * @param text    The actual content of the message
-     */
+    public TwitchMessage(String channel, User user, String text) {
+        super(channel, user, text);
+    }
+
     public TwitchMessage(String channel, String text) {
         super(channel, text);
     }

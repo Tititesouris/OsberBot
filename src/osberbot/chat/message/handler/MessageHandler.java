@@ -21,14 +21,13 @@ public interface MessageHandler {
     Message handle(String message);
 
     /**
-     * This method's job is to handle a message received from the server, knowing the channel it was sent to and the user it was sent by, and return an appropriate message for the client to send back to the server.
+     * This method's job is to handle a message received from the server, knowing all the information sent by the server about the channel and the author.
+     * This information in bundled in the Message object.
      *
-     * @param channel Channel the message was sent to
-     * @param name    Name of the user who sent the message
      * @param message Message sent by the user
      * @return The message to send back to the server. Or null if nothing should get sent.
      */
-    Message handleMessage(String channel, String name, String message);
+    Message handleMessage(Message message);
 
     /**
      * This method's job is to handle a command received from the server, knowing the channel it was used in and the user it was used by, and return an appropriate message for the client to send back to the server.
