@@ -1,4 +1,8 @@
+# IntelliJ
 .idea/
 out/
-config/
 OsberBot.iml
+
+# Security
+config/
+src/osberbot/models/

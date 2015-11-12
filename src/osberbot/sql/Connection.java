@@ -40,6 +40,16 @@ public class Connection {
 
     }
 
+    public ResultSet execute(String query) {
+        try {
+            statement = connection.prepareStatement(query);
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public ResultSet execute(String query, Object[] parameters) {
         try {
             statement = connection.prepareStatement(query);
@@ -54,14 +64,12 @@ public class Connection {
     }
 
     public void close() {
-
         try {
             statement.close();
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
 }

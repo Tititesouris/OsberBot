@@ -1,5 +1,6 @@
 package osberbot.chat.message.handler;
 
+import osberbot.chat.Quotes;
 import osberbot.chat.message.Message;
 import osberbot.chat.message.TwitchMessage;
 import osberbot.chat.user.TwitchUser;
@@ -42,12 +43,22 @@ public class TwitchMessageHandler implements MessageHandler {
     @Override
     public TwitchMessage handleMessage(Message message) {
         String text = message.getText();
-        String textLower = text.toLowerCase();
-        if (textLower.startsWith("!say ")) {
-            String params = text.split(" ", 2)[1];
-            if (params.startsWith("#"))
-                return new TwitchMessage(params.split(" ", 1)[0].substring(1), message.getUser(), params.split(" ", 2)[1]);
-            return new TwitchMessage(message.getChannel(), message.getUser(), params);
+
+        if (text.startsWith("!")) {
+            String cmd = text.split(" ")[0].toLowerCase();
+
+            switch (cmd) {
+                case "!quote":
+                    Quotes.input(message);
+                    break;
+            }
+            /*
+            if (textLower.startsWith("!say ")) {
+                String params = text.split(" ", 2)[1];
+                if (params.startsWith("#"))
+                    return new TwitchMessage(params.split(" ", 1)[0].substring(1), message.getUser(), params.split(" ", 2)[1]);
+                return new TwitchMessage(message.getChannel(), message.getUser(), params);
+            }*/
         }
         return null;
     }

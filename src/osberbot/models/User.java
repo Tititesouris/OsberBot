@@ -1,9 +1,9 @@
 package osberbot.models;
 
-import java.util.List;
-
 /**
- * Created by Tititesouris on 27/09/2015.
+ * TODO
+ *
+ * @author Tititesouris
  */
 public class User {
 
@@ -11,9 +11,12 @@ public class User {
 
     private String name;
 
-    public User(int id, String name) {
+    private String password;
+
+    public User(int id, String name, String password) {
         this.id = id;
         this.name = name;
+        this.password = password;
     }
 
     public int getId() {
@@ -32,28 +35,12 @@ public class User {
         this.name = name;
     }
 
-    public static List<User> findAll() {
-        return null;
+    public String getPassword() {
+        return password;
     }
 
-    public static List<User> findById() {
-        return null;
-    }
-
-    public static List<User> findByName() {
-        return null;
-    }
-
-    boolean insertUser(User user) {
-        return false;
-    }
-
-    boolean updateUser(User user) {
-        return false;
-    }
-
-    boolean deleteUser(User user) {
-        return false;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
