@@ -94,9 +94,9 @@ public class BotController {
                     while (ranksDB.next()) {
                         JsonParser parser = new JsonParser();
                         JsonObject powers = (JsonObject) parser.parse(ranksDB.getString("powers"));
-                        Rank rank = new Rank(ranksDB.getInt("id"), channel, ranksDB.getString("name"), ranksDB.getBoolean("all_powers"), powers, ranksDB.getTimestamp("created_at"), ranksDB.getTimestamp("updated_at"));
+                        /*Rank rank = new Rank(ranksDB.getInt("id"), channel, ranksDB.getString("name"), ranksDB.getBoolean("all_powers"), powers, ranksDB.getTimestamp("created_at"), ranksDB.getTimestamp("updated_at"));
                         System.out.println("Adding rank " + rank);
-                        channel.addRank(rank);
+                        channel.addRank(rank);*/
                     }
                 }
             }

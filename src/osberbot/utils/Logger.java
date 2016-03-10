@@ -1,4 +1,4 @@
-package osberbot;
+package osberbot.utils;
 
 /**
  * TODO: Description

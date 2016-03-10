@@ -53,11 +53,11 @@ public abstract class Client {
         }
     }
 
-    protected void write(String message) {
+    public void write(String message) {
         writer.println(message);
     }
 
-    protected void flush() {
+    public void flush() {
         writer.flush();
     }
 

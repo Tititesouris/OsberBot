@@ -1,8 +1,10 @@
-package osberbot;
+package osberbot.twitch;
 
-import java.io.BufferedReader;
+import osberbot.Channel;
+import osberbot.Client;
+import osberbot.utils.Logger;
+
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * TODO: Description
@@ -19,15 +21,20 @@ public class TwitchClient extends Client {
     @Override
     public boolean connect() {
         Logger.log("Connecting to Twitch.");
-        write("NICK " + login);
         write("PASS " + password);
+        write("NICK " + login);
         write("CAP REQ :twitch.tv/membership");
         write("CAP REQ :twitch.tv/commands");
         write("CAP REQ :twitch.tv/tags");
         flush();
         if (read().contains(":tmi.twitch.tv 001")) {
-            Logger.log("Successfully connected to Twitch.");
-            return true;
+            for (int i = 0; i < 8; i++) {
+                read();
+            }
+            if (read().contains(":tmi.twitch.tv CAP * ACK :twitch.tv/tags")) {
+                Logger.log("Successfully connected to Twitch.");
+                return true;
+            }
         }
         Logger.log("Failed to connect to Twitch");
         return false;
@@ -51,8 +58,9 @@ public class TwitchClient extends Client {
     public Channel join(String channel) {
         Logger.log("Joining channel #" + channel);
         write("JOIN #" + channel);
+        flush();
         Logger.log("Successfully joined channel #" + channel);
-        return new Channel(this, channel);
+        return new TwitchChannel(this, channel);
     }
 
     @Override
