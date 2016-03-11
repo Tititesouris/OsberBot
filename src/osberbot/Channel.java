@@ -15,35 +15,41 @@ public abstract class Channel implements Runnable {
 
     protected String name;
 
-    private List<ChannelObserver> observers;
+    private List<Module> modules;
 
     public Channel(Client client, String name) {
         this.client = client;
         this.name = name;
-        this.observers = new ArrayList<>();
+        this.modules = new ArrayList<>();
     }
 
-    public abstract void send(String message);
+    protected abstract void send(String message);
 
     @Override
     public void run() {
         String line;
         while ((line = client.read()) != null) {
-            notifyObservers(line);
+            notifyModules(line);
         }
     }
 
-    private void notifyObservers(String message) {
-        for (ChannelObserver observer : observers)
-            observer.receive(message);
+    private void notifyModules(String message) {
+        for (Module module : modules)
+            module.input(this, message);
     }
 
-    public boolean addObserver(ChannelObserver observer) {
-        return observers.add(observer);
+    public Channel addModule(Module observer) {
+        modules.add(observer);
+        return this;
     }
 
-    public boolean removeObserver(ChannelObserver observer) {
-        return observers.remove(observer);
+    public Channel removeModule(Module observer) {
+        modules.remove(observer);
+        return this;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

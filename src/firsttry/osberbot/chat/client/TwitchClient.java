@@ -78,7 +78,7 @@ public class TwitchClient extends Client implements Runnable {
             if (debug)
                 System.out.print('.');
             writer.write("CAP REQ :twitch.tv/membership\n");
-            writer.write("CAP REQ :twitch.tv/commands\n");
+            writer.write("CAP REQ :twitch.tv/modules\n");
             writer.write("CAP REQ :twitch.tv/tags\n");
             if (debug)
                 System.out.print('.');
