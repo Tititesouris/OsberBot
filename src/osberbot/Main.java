@@ -1,12 +1,10 @@
 package osberbot;
 
+import osberbot.modules.Moderation;
 import osberbot.modules.Uptime;
-import osberbot.twitch.TwitchChannel;
 import osberbot.twitch.TwitchClient;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -16,8 +14,6 @@ import java.util.Properties;
  * @since 2016/03/10
  */
 public class Main {
-
-    private static List<String> channels = new ArrayList<>();
 
     public static void main(String[] args) {
         String name = null;
@@ -37,14 +33,12 @@ public class Main {
         TwitchClient twitch = new TwitchClient(name, password);
         twitch.connect();
 
-        channels.add("tititesouris");
-        channels.add("starrlett20");
-        channels.add("honneyplay");
-        Uptime uptime = new Uptime();
-
-        for (String channel : channels) {
-            new Thread(twitch.join(channel).addModule(uptime)).start();
+        for (String channelName : new String[]{"osberbot", "tititesouris", "starrlett20", "honneyplay"}) {
+            Channel channel = twitch.join(channelName);
+            channel.addModule(new Uptime()).addModule(new Moderation());
         }
-    }
 
+        twitch.run();
+
+    }
 }

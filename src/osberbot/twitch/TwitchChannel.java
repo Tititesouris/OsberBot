@@ -1,7 +1,7 @@
 package osberbot.twitch;
 
 import osberbot.Channel;
-import osberbot.Client;
+import osberbot.data.TwitchData;
 
 /**
  * TODO: Description
@@ -13,6 +13,11 @@ public class TwitchChannel extends Channel {
 
     public TwitchChannel(TwitchClient client, String name) {
         super(client, name);
+    }
+
+    @Override
+    public void receive(TwitchData data) {
+        notifyModules(data);
     }
 
     @Override

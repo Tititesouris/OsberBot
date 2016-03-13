@@ -2,6 +2,7 @@ package osberbot.twitch;
 
 import osberbot.Channel;
 import osberbot.Client;
+import osberbot.data.*;
 import osberbot.utils.Logger;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.io.IOException;
 public class TwitchClient extends Client {
 
     public TwitchClient(String login, String password) {
-        super("irc.twitch.tv", 6667, login, password);
+        super("irc.chat.twitch.tv", 443, login, password);
     }
 
     @Override
@@ -60,189 +61,73 @@ public class TwitchClient extends Client {
         write("JOIN #" + channel);
         flush();
         Logger.log("Successfully joined channel #" + channel);
-        return new TwitchChannel(this, channel);
+        TwitchChannel joined = new TwitchChannel(this, channel);
+        channels.add(joined);
+        return joined;
     }
 
     @Override
     public boolean leave(Channel channel) {
+        channels.remove(channel);
         return false;
-    }
-
-
-/*
-    @Override
-    public boolean connect() {
-        try {
-            if (debug)
-                System.out.print("Connecting to the server.");
-            writer.write("PASS " + password + "\n");
-            writer.write("NICK " + name + "\n");
-            if (debug)
-                System.out.print('.');
-            writer.write("CAP REQ :twitch.tv/membership\n");
-            writer.write("CAP REQ :twitch.tv/modules\n");
-            writer.write("CAP REQ :twitch.tv/tags\n");
-            if (debug)
-                System.out.print('.');
-            writer.flush();
-            String line = reader.readLine();
-            if (line.contains(":tmi.twitch.tv 001")) {
-                if (debug)
-                    System.out.println("\tSuccess!");
-                return true;
-            }
-            if (debug)
-                System.out.println("\tFailure: " + line);
-            return false;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
-            }
-            return false;
-        }
-    }
-
-    @Override
-    public boolean disconnect() {
-        try {
-            if (debug)
-                System.out.print("Closing connection...");
-            socket.close();
-            if (debug)
-                System.out.println("\tSuccess!");
-            return true;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
-            }
-            return false;
-        }
     }
 
     @Override
     public void run() {
-        if (debug)
-            System.out.println("Listening...");
-        try {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                getMessage(line);
-            }
-        } catch (Exception e) {
-            System.out.println("---------- WARNING ----------");
-            e.printStackTrace(System.out);
-        }
-    }
+        String line;
+        while ((line = read()) != null) {
+            System.out.println("<< " + line);
 
-    @Override
-    public boolean pong() {
-        try {
-            if (debug)
-                System.out.print("Sending PONG...");
-            writer.write("PONG tmi.twitch.tv\n");
-            writer.flush();
-            if (debug)
-                System.out.println("\tSuccess!");
-            return true;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
-            }
-            return false;
-        }
-    }
-
-    @Override
-    protected void getMessage(String message) {
-        if (debug)
-            System.out.println("<< " + message);
-
-        if (message.contains("PING")) {
-            ping();
-        } else {
-            Message reply = messageHandler.handle(message);
-            if (reply != null) {
-                sendMessage(reply);
-            }
-        }
-    }
-
-    @Override
-    public boolean sendMessage(Message message) {
-        if (message instanceof TwitchMessage) {
-            messageQueue.add(message);
-            try {
-                while (messageQueue.canSend()) {
-                    TwitchMessage twitchMessage = (TwitchMessage) messageQueue.pop();
-                    writer.write("PRIVMSG #" + twitchMessage.getChannel() + " :" + twitchMessage.getText() + '\n');
-                    writer.flush();
-                    if (debug)
-                        System.out.println(">> [" + twitchMessage.getChannel() + "] " + twitchMessage.getText());
+            if (PRIVMSGData.matches(line)) {
+                PRIVMSGData data = new PRIVMSGData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
                 }
-                return true;
-            } catch (IOException e) {
-                if (debug) {
-                    System.out.println("\tFailure:");
-                    e.printStackTrace(System.out);
+            }
+            else if (JOINData.matches(line)) {
+                JOINData data = new JOINData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
                 }
-                return false;
             }
-
-        }
-        return false;
-    }
-
-    @Override
-    protected void getWhisper(String name, String message) {
-
-    }
-
-    @Override
-    public boolean sendWhisper(String name, String message) {
-        return false;
-    }
-
-    @Override
-    public boolean joinChannel(String channel) {
-        try {
-            if (debug)
-                System.out.print("Joining channel " + channel + "...");
-            writer.write("JOIN #" + channel + '\n');
-            if (debug)
-                System.out.println("\tSuccess!");
-            return true;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
+            else if (PARTData.matches(line)) {
+                PARTData data = new PARTData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
+                }
             }
-            return false;
-        }
-    }
-
-    @Override
-    public boolean leaveChannel(String channel) {
-        try {
-            if (debug)
-                System.out.print("Leaving channel " + channel + "...");
-            writer.write("PART #" + channel + '\n');
-            if (debug)
-                System.out.println("\tSuccess!");
-            return true;
-        } catch (IOException e) {
-            if (debug) {
-                System.out.println("\tFailure:");
-                e.printStackTrace(System.out);
+            else if (MODEData.matches(line)) {
+                MODEData data = new MODEData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
+                }
             }
-            return false;
+            else if (ROOMSTATEData.matches(line)) {
+                ROOMSTATEData data = new ROOMSTATEData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
+                }
+            }
+            else if (USERSTATEData.matches(line)) {
+                USERSTATEData data = new USERSTATEData(line);
+                for (Channel channel : channels) {
+                    if (channel.getName().equals(data.getChannel())) {
+                        channel.receive(data);
+                    }
+                }
+            }
         }
     }
 
-    private static Server getServer() {
-        return new Server("irc.twitch.tv", 6667);
-    }
-*/
+
 }

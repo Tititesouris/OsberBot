@@ -1,5 +1,8 @@
 package osberbot;
 
+import sun.security.ssl.SSLSocketImpl;
+
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ public abstract class Client {
 
     protected String password;
 
-    private List<Channel> channels;
+    protected List<Channel> channels;
 
     public Client(String ip, int port, String login, String password) {
         this.ip = ip;
@@ -37,7 +40,8 @@ public abstract class Client {
         this.channels = new ArrayList<>();
 
         try {
-            socket = new Socket(ip, port);
+            SSLSocketFactory ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            socket = ssf.createSocket(ip, port);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream());
         } catch (IOException e) {
@@ -68,5 +72,7 @@ public abstract class Client {
     public abstract Channel join(String channel);
 
     public abstract boolean leave(Channel channel);
+
+    public abstract void run();
 
 }

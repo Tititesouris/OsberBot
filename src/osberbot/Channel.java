@@ -1,5 +1,7 @@
 package osberbot;
 
+import osberbot.data.TwitchData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * @author Tititesouris
  * @since 2016/02/12
  */
-public abstract class Channel implements Runnable {
+public abstract class Channel {
 
     protected Client client;
 
@@ -23,28 +25,22 @@ public abstract class Channel implements Runnable {
         this.modules = new ArrayList<>();
     }
 
+    public abstract void receive(TwitchData data);
+
     protected abstract void send(String message);
 
-    @Override
-    public void run() {
-        String line;
-        while ((line = client.read()) != null) {
-            notifyModules(line);
-        }
-    }
-
-    private void notifyModules(String message) {
+    protected void notifyModules(TwitchData message) {
         for (Module module : modules)
             module.input(this, message);
     }
 
-    public Channel addModule(Module observer) {
-        modules.add(observer);
+    public Channel addModule(Module module) {
+        modules.add(module);
         return this;
     }
 
-    public Channel removeModule(Module observer) {
-        modules.remove(observer);
+    public Channel removeModule(Module module) {
+        modules.remove(module);
         return this;
     }
 

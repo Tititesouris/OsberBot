@@ -1,5 +1,7 @@
 package osberbot;
 
+import osberbot.data.TwitchData;
+
 /**
  * TODO: Description
  *
@@ -8,7 +10,7 @@ package osberbot;
  */
 public abstract class Module {
 
-    public abstract void input(Channel channel, String message);
+    public abstract void input(Channel channel, TwitchData data);
 
     protected void output(Channel channel, String message) {
         channel.send(message);
