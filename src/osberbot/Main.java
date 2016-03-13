@@ -1,5 +1,6 @@
 package osberbot;
 
+import osberbot.modules.ColorGame;
 import osberbot.modules.Moderation;
 import osberbot.modules.Uptime;
 import osberbot.twitch.TwitchClient;
@@ -35,7 +36,7 @@ public class Main {
 
         for (String channelName : new String[]{"osberbot", "tititesouris", "starrlett20", "honneyplay"}) {
             Channel channel = twitch.join(channelName);
-            channel.addModule(new Uptime()).addModule(new Moderation());
+            channel.addModule(new Uptime()).addModule(new Moderation()).addModule(new ColorGame());
         }
 
         twitch.run();

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class MODEData extends TwitchData {
 
-    private static Pattern PATTERN = Pattern.compile(":jtv MODE #(\\w+) (.{2}) (\\w+)");
+    private static final Pattern PATTERN = Pattern.compile(":jtv MODE #(\\w+) (.{2}) (\\w+)");
 
     private String mode;
 

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class JOINData extends TwitchData {
 
-    private static Pattern PATTERN = Pattern.compile(":(\\w+)!\\w+@\\w+\\.tmi\\.twitch\\.tv JOIN #(\\w+)");
+    private static final Pattern PATTERN = Pattern.compile(":(\\w+)!\\w+@\\w+\\.tmi\\.twitch\\.tv JOIN #(\\w+)");
 
     private String name;
 

@@ -76,53 +76,53 @@ public class TwitchClient extends Client {
     public void run() {
         String line;
         while ((line = read()) != null) {
-            System.out.println("<< " + line);
+            if (line.equals("PING :tmi.twitch.tv")) {
+                write("PONG");
+                flush();
+            } else {
+                System.out.println("<< " + line);
 
-            if (PRIVMSGData.matches(line)) {
-                PRIVMSGData data = new PRIVMSGData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                if (PRIVMSGData.matches(line)) {
+                    PRIVMSGData data = new PRIVMSGData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
-                }
-            }
-            else if (JOINData.matches(line)) {
-                JOINData data = new JOINData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                } else if (JOINData.matches(line)) {
+                    JOINData data = new JOINData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
-                }
-            }
-            else if (PARTData.matches(line)) {
-                PARTData data = new PARTData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                } else if (PARTData.matches(line)) {
+                    PARTData data = new PARTData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
-                }
-            }
-            else if (MODEData.matches(line)) {
-                MODEData data = new MODEData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                } else if (MODEData.matches(line)) {
+                    MODEData data = new MODEData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
-                }
-            }
-            else if (ROOMSTATEData.matches(line)) {
-                ROOMSTATEData data = new ROOMSTATEData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                } else if (ROOMSTATEData.matches(line)) {
+                    ROOMSTATEData data = new ROOMSTATEData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
-                }
-            }
-            else if (USERSTATEData.matches(line)) {
-                USERSTATEData data = new USERSTATEData(line);
-                for (Channel channel : channels) {
-                    if (channel.getName().equals(data.getChannel())) {
-                        channel.receive(data);
+                } else if (USERSTATEData.matches(line)) {
+                    USERSTATEData data = new USERSTATEData(line);
+                    for (Channel channel : channels) {
+                        if (channel.getName().equals(data.getChannel())) {
+                            channel.receive(data);
+                        }
                     }
                 }
             }

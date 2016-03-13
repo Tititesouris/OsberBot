@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  */
 public class ROOMSTATEData extends TwitchData {
 
-    private static Pattern PATTERN = Pattern.compile("@broadcaster-lang=(\\w*);r9k=(\\d);slow=(\\d);subs-only=(\\d) :tmi\\.twitch\\.tv ROOMSTATE #(\\w+)");
+    private static final Pattern PATTERN = Pattern.compile("@broadcaster-lang=(\\w*);r9k=(\\d);slow=(\\d);subs-only=(\\d) :tmi\\.twitch\\.tv ROOMSTATE #(\\w+)");
 
     private String language;
 

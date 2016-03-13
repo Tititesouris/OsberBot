@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class USERSTATEData extends TwitchData {
 
-    private static Pattern PATTERN = Pattern.compile("@color=#([0-9A-F]{6});display-name=(\\w+);emote-sets=(\\d);mod=(\\d);subscriber=(\\d);turbo=(\\d);user-type=(\\w*) :tmi\\.twitch\\.tv USERSTATE #(\\w+)");
+    private static final Pattern PATTERN = Pattern.compile("@color=#([0-9A-F]{6});display-name=(\\w+);emote-sets=(\\d);mod=(\\d);subscriber=(\\d);turbo=(\\d);user-type=(\\w*) :tmi\\.twitch\\.tv USERSTATE #(\\w+)");
 
     private String color;
 
