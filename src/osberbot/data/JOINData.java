@@ -33,4 +33,11 @@ public class JOINData extends TwitchData {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "JOINData{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
 }

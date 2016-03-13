@@ -54,4 +54,14 @@ public class ROOMSTATEData extends TwitchData {
         return subsOnly;
     }
 
+    @Override
+    public String toString() {
+        return "ROOMSTATEData{" +
+                "language='" + language + '\'' +
+                ", r9k=" + r9k +
+                ", slow=" + slow +
+                ", subsOnly=" + subsOnly +
+                '}';
+    }
+
 }

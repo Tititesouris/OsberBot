@@ -26,4 +26,12 @@ public abstract class TwitchData {
         return channel;
     }
 
+    @Override
+    public String toString() {
+        return "TwitchData{" +
+                "raw='" + raw + '\'' +
+                ", channel='" + channel + '\'' +
+                '}';
+    }
+
 }

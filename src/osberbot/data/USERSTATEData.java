@@ -77,4 +77,17 @@ public class USERSTATEData extends TwitchData {
         return userType;
     }
 
+    @Override
+    public String toString() {
+        return "USERSTATEData{" +
+                "color='" + color + '\'' +
+                ", name='" + name + '\'' +
+                ", emotes='" + emotes + '\'' +
+                ", mod=" + mod +
+                ", subscriber=" + subscriber +
+                ", turbo=" + turbo +
+                ", userType='" + userType + '\'' +
+                '}';
+    }
+
 }

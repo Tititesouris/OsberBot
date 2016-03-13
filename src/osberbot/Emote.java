@@ -10,34 +10,38 @@ public class Emote {
 
     private int id;
 
-    private int min;
+    private int start;
 
-    private int max;
+    private int end;
 
-    public Emote(int id, int min, int max) {
+    public Emote(int id, int start, int end) {
         this.id= id;
-        this.min = min;
-        this.max = max;
+        this.start = start;
+        this.end = end;
     }
 
     public int getId() {
         return id;
     }
 
-    public int getMin() {
-        return min;
+    public int getStart() {
+        return start;
     }
 
-    public int getMax() {
-        return max;
+    public int getEnd() {
+        return end;
+    }
+
+    public int getLength() {
+        return end - start;
     }
 
     @Override
     public String toString() {
         return "Emote{" +
                 "id=" + id +
-                ", min=" + min +
-                ", max=" + max +
+                ", start=" + start +
+                ", end=" + end +
                 '}';
     }
 

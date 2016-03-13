@@ -40,4 +40,12 @@ public class MODEData extends TwitchData {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "MODEData{" +
+                "mode='" + mode + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 }

@@ -33,4 +33,11 @@ public class PARTData extends TwitchData {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "PARTData{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
 }
