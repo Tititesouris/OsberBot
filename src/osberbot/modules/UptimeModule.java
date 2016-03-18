@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  * @author Tititesouris
  * @since 2016/03/11
  */
-public class Uptime extends Module {
+public class UptimeModule extends Module {
 
     @Override
     public void input(Channel channel, TwitchData data) {

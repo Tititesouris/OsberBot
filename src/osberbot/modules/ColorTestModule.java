@@ -15,7 +15,7 @@ import java.util.List;
  * @author Tititesouris
  * @since 2016/03/13
  */
-public class ColorGame extends Module {
+public class ColorTestModule extends Module {
 
     private Map<String, List<String>> teams;
 

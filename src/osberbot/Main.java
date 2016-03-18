@@ -1,11 +1,9 @@
 package osberbot;
 
-import osberbot.modules.ColorGame;
-import osberbot.modules.Moderation;
-import osberbot.modules.Uptime;
 import osberbot.twitch.TwitchClient;
 
 import java.io.*;
+import java.sql.*;
 import java.util.Properties;
 
 /**
@@ -17,29 +15,36 @@ import java.util.Properties;
 public class Main {
 
     public static void main(String[] args) {
-        String name = null;
-        String password = null;
         try {
             Properties properties = new Properties();
             FileInputStream in;
             in = new FileInputStream("config/twitch.properties");
             properties.load(in);
-            name = properties.getProperty("name");
-            password = properties.getProperty("password");
+            String name = properties.getProperty("name");
+            String password = properties.getProperty("password");
+
+            TwitchClient twitch = new TwitchClient(name, password);
+            twitch.connect();
+
+            Connection db = new DatabaseConnection().getConnection();
+            Statement statement = db.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT name FROM channels WHERE type = 'TWITCH';");
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("name"));
+            }
+
+            for (String channelName : new String[]{"osberbot", "tititesouris", "starrlett20", "honneyplay"}) {
+                Channel channel = twitch.join(channelName);
+            }
+
+            twitch.run();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        TwitchClient twitch = new TwitchClient(name, password);
-        twitch.connect();
-
-        for (String channelName : new String[]{"osberbot", "tititesouris", "starrlett20", "honneyplay"}) {
-            Channel channel = twitch.join(channelName);
-            channel.addModule(new Uptime()).addModule(new Moderation()).addModule(new ColorGame());
-        }
-
-        twitch.run();
-
     }
 }

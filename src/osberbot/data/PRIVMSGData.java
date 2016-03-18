@@ -68,7 +68,6 @@ public class PRIVMSGData extends TwitchData {
             this.channel = matcher.group(10);
             this.message = matcher.group(11);
         }
-        System.out.println(this);
     }
 
     public static boolean matches(String raw) {

@@ -3,6 +3,9 @@ package osberbot.twitch;
 import osberbot.Channel;
 import osberbot.Client;
 import osberbot.data.*;
+import osberbot.modules.ColorTestModule;
+import osberbot.modules.ModerationModule;
+import osberbot.modules.UptimeModule;
 import osberbot.utils.Logger;
 
 import java.io.IOException;
@@ -62,6 +65,7 @@ public class TwitchClient extends Client {
         flush();
         Logger.log("Successfully joined channel #" + channel);
         TwitchChannel joined = new TwitchChannel(this, channel);
+        joined.addModule(new ModerationModule()).addModule(new UptimeModule()).addModule(new ColorTestModule());
         channels.add(joined);
         return joined;
     }

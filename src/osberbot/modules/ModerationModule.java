@@ -11,7 +11,7 @@ import osberbot.data.TwitchData;
  * @author Tititesouris
  * @since 2016/03/13
  */
-public class Moderation extends Module {
+public class ModerationModule extends Module {
 
     @Override
     public void input(Channel channel, TwitchData data) {
