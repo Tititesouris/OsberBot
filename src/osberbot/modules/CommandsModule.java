@@ -2,7 +2,7 @@ package osberbot.modules;
 
 import osberbot.Channel;
 import osberbot.Module;
-import osberbot.bo.Command;
+import osberbot.bo.CommandBO;
 import osberbot.dao.CommandsDAO;
 import osberbot.data.PRIVMSGData;
 import osberbot.data.TwitchData;
@@ -56,7 +56,7 @@ public class CommandsModule extends Module {
             return "Missing command name.";
         if (content == null)
             return "Missing command content.";
-        dao.add(new Command());
+        dao.add(new CommandBO());
         return "Added command '" + name + "' with content '" + content + "'.";
     }
 

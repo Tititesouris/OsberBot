@@ -13,11 +13,11 @@ public class NamedBusinessObject extends BusinessObject {
     protected String name;
 
     public NamedBusinessObject() {
+        this(null, null, null, null);
     }
 
     public NamedBusinessObject(Integer id, String name) {
-        super(id);
-        this.name = name;
+        this(id, name, null, null);
     }
 
     public NamedBusinessObject(Integer id, String name, Timestamp createdAt, Timestamp updatedAt) {

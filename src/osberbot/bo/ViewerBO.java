@@ -6,7 +6,7 @@ package osberbot.bo;
  * @author Tititesouris
  * @since 2016/03/20
  */
-public class Viewer {
+public class ViewerBO {
 
     private Integer id;
 
@@ -16,13 +16,13 @@ public class Viewer {
 
     private RankBO rank;
 
-    public Viewer(Integer id, String name, RankBO rank) {
+    public ViewerBO(Integer id, String name, RankBO rank) {
         this.id = id;
         this.name = name;
         this.rank = rank;
     }
 
-    public boolean hasPower(Power power) {
+    public boolean hasPower(PowerBO power) {
         if (rank != null)
             return rank.hasPower(power);
         return moderator;

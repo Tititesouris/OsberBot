@@ -6,5 +6,5 @@ package osberbot.bo;
  * @author Tititesouris
  * @since 2016/03/20
  */
-public class Power {
+public class TwitchChannelBO extends ChannelBO {
 }

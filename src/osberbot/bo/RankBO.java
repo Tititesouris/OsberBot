@@ -17,7 +17,7 @@ public class RankBO {
         this.name = name;
     }
 
-    public boolean hasPower(Power power) {
+    public boolean hasPower(PowerBO power) {
         return false;
     }
 

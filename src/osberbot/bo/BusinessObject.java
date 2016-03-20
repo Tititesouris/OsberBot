@@ -17,10 +17,11 @@ public class BusinessObject {
     protected Timestamp updatedAt;
 
     public BusinessObject() {
+        this(null, null, null);
     }
 
     public BusinessObject(Integer id) {
-        this.id = id;
+        this(id, null, null);
     }
 
     public BusinessObject(Integer id, Timestamp createdAt, Timestamp updatedAt) {
