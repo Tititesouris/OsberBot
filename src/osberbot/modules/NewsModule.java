@@ -2,8 +2,6 @@ package osberbot.modules;
 
 import osberbot.Channel;
 import osberbot.Module;
-import osberbot.bo.Command;
-import osberbot.dao.CommandsDAO;
 import osberbot.data.PRIVMSGData;
 import osberbot.data.TwitchData;
 
@@ -14,13 +12,11 @@ import java.util.regex.Pattern;
  * TODO: Description
  *
  * @author Tititesouris
- * @since 2016/03/19
+ * @since 2016/03/20
  */
-public class CommandsModule extends Module {
+public class NewsModule extends Module {
 
-    private CommandsDAO dao = new CommandsDAO();
-
-    private static final Pattern PATTERN = Pattern.compile("^~test~cmd (list|add|rem|help)(?: (\\S+)(?: (.+))?)?$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    private static final Pattern PATTERN = Pattern.compile("^~test~news (list|add|rem|help)(?: (\\S+)(?: (.+))?)?$", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
     @Override
     public void input(Channel channel, TwitchData data) {
@@ -29,17 +25,17 @@ public class CommandsModule extends Module {
             Matcher matcher = PATTERN.matcher(privmsgData.getMessage());
             if (matcher.find()) {
                 String action = matcher.group(1);
-                String name = matcher.group(2);
-                String content = matcher.group(3);
+                String content = matcher.group(2);
+                String id = matcher.group(2);// ?
                 switch (action) {
                     case "list":
                         output(channel, list());
                         break;
                     case "add":
-                        output(channel, add(name, content));
+                        output(channel, add(content));
                         break;
                     case "rem":
-                        output(channel, remove(name));
+                        output(channel, remove(id));
                         break;
                     case "help":
                         output(channel, help());
@@ -51,19 +47,18 @@ public class CommandsModule extends Module {
         }
     }
 
-    private String add(String name, String content) {
-        if (name == null)
-            return "Missing command name.";
+    private String add(String content) {
         if (content == null)
-            return "Missing command content.";
-        dao.add(new Command());
-        return "Added command '" + name + "' with content '" + content + "'.";
+            return "Missing news content.";
+        int id = 5;
+        return "Added news #" + id + " with content '" + content + "'.";
     }
 
     private String remove(String name) {
         if (name == null)
-            return "Missing command name.";
-        return "Removed command '" + name + "'.";
+            return "Missing news id.";
+        int id = 5;
+        return "Removed news #" + id + " with content '" + name + "'.";
     }
 
     private String list() {
@@ -71,7 +66,7 @@ public class CommandsModule extends Module {
     }
 
     private String help() {
-        return "Syntax: !cmd (list|add <name> <content>|rem <name>|help)";
+        return "Syntax: !news (list|add <content>|rem <id>|help)";
     }
 
 }
