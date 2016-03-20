@@ -25,16 +25,16 @@ public class Main {
 
             TwitchClient twitch = new TwitchClient(name, password);
             twitch.connect();
-
+/*
             Connection db = new DatabaseConnection().getConnection();
             Statement statement = db.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT name FROM channels WHERE type = 'TWITCH';");
             while (resultSet.next()) {
                 System.out.println(resultSet.getString("name"));
-            }
+            }*/
 
             for (String channelName : new String[]{"osberbot", "tititesouris", "starrlett20", "honneyplay"}) {
-                Channel channel = twitch.join(channelName);
+                twitch.join(channelName);
             }
 
             twitch.run();
@@ -42,8 +42,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
